@@ -1,14 +1,14 @@
+import { readFile } from "fs/promises";
+import path from "path";
+import { NotFoundException } from "../../lib/exceptions";
+import PromiseFS from "../../lib/promise/fs";
 import {
   GetTemplateArgs,
   MakeTemplateArgs,
   RawTemplateResult,
 } from "../../types/template";
-import path from "path";
-import { NotFoundException } from "../exceptions";
-import PromiseFS from "../promise/fs";
-import { readFile } from "fs/promises";
 
-export default class Template {
+export default class TemplateService {
   public static async getRawTemplate(
     args: GetTemplateArgs
   ): Promise<RawTemplateResult> {

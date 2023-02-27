@@ -1,10 +1,10 @@
 {
-  "name": "memage",
+  "name": "jenzo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Generate custom OG meta images on the fly",
+  "main": "./build/server.js",
   "scripts": {
-    "start": "node ./dist/server",
+    "start": "node ./build/server",
     "dev": "nodemon ./src/server.ts",
     "build": "tsc -p ."
   },
@@ -12,7 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "^8.2.0",
+    "@fastify/env": "^4.2.0",
     "fastify": "^4.13.0",
+    "fastify-zod": "^1.2.0",
     "puppeteer": "^19.7.2",
     "zod": "^3.20.6"
   },

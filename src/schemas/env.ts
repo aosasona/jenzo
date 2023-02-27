@@ -2,8 +2,12 @@ export default {
   type: "object",
   required: [],
   properties: {
-    PORT: {
+    ADDR: {
       type: "string",
+      default: "0.0.0.0",
+    },
+    PORT: {
+      type: "number",
       default: 8080,
     },
     ALLOWED_IPS: {

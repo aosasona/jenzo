@@ -1,4 +1,5 @@
 export default {
+  allowedOrigins: "*",
   templates: {
     src: "templates",
     default: "mono",
@@ -23,4 +24,4 @@ export default {
       "5xl": "3rem",
     },
   },
-};
+} as const;
