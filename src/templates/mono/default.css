@@ -1,0 +1,26 @@
+body {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  max-width: 80%;
+}
+
+.bottom_bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 0.6rem;
+  background-color: #d5d5d5;
+  padding: 0.5rem;
+  margin-top: auto;
+}
+
+.user_image {
+  width: 0.5rem;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
+}
