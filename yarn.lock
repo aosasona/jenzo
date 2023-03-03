@@ -77,6 +77,14 @@
   dependencies:
     fast-json-stringify "^5.0.0"
 
+"@fastify/formbody@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@fastify/formbody/-/formbody-7.4.0.tgz#5370b16d1ee58b9023008d1e883de60353a132ad"
+  integrity sha512-H3C6h1GN56/SMrZS8N2vCT2cZr7mIHzBHzOBa5OPpjfB/D6FzP9mMpE02ZzrFX0ANeh0BAJdoXKOF2e7IbV+Og==
+  dependencies:
+    fast-querystring "^1.0.0"
+    fastify-plugin "^4.0.0"
+
 "@fastify/send@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@fastify/send/-/send-2.0.1.tgz#db10d1401883b4aef41669fcf2ddb4e1bb4630df"

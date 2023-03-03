@@ -4,6 +4,9 @@ import fastifyCors from "@fastify/cors";
 import handleException from "./lib/exceptions/handler";
 import { default as jenzoConfig } from "./jenzo.config";
 import { default as envSchema } from "./schemas/env";
+import TemplateRoutes from "./modules/template/template.route";
+import { templateSchemas } from "./modules/template/template.schema";
+import { Route } from "./types/modules";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -23,7 +26,9 @@ export default class App {
     await App.server.after(); // fastify does not load the environment variables unless this is called
 
     await App.configureCors();
+    App.addSchemas();
     App.addHealthCheck();
+    App.initAPIRoutes([new TemplateRoutes()]);
     App.attachErrorHandler();
   }
 
@@ -59,14 +64,34 @@ export default class App {
 
   private static attachErrorHandler() {
     App.server.setErrorHandler(function(err, _, reply) {
-      const { message, code } = handleException(err);
-      return reply.status(code).send({ ok: false, message });
+      console.error(err.message);
+      if (!err.validation && !err.validationContext) {
+        const { message, code } = handleException(err);
+        return reply.status(code).send({ ok: false, message });
+      }
+      return reply.status(400).send({ ok: false, message: err.message });
     });
   }
 
-  public static addHealthCheck() {
+  private static addHealthCheck() {
     App.server.get("/health", async function(_, reply) {
       return reply.send({ ok: true });
+    });
+  }
+
+  private static addSchemas() {
+    for (const schema of [...templateSchemas]) {
+      App.server.addSchema(schema);
+    }
+  }
+
+  private static initAPIRoutes(routes: Route[]) {
+    if (routes.length == 0) return;
+
+    routes.forEach((route) => {
+      App.server.register(route.init, {
+        prefix: `api/v1/${route.prefix}`,
+      });
     });
   }
 }
