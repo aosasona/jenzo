@@ -1,16 +1,25 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { GetTemplateArgs } from "../../types/template";
-import { GetTemplateRequest } from "./template.schema";
+import {
+  GetTemplateRequestParams,
+  GetTemplateRequestQuery,
+} from "./template.schema";
 import TemplateService from "./template.service";
 
 export default class TemplateController {
   public static async getTemplate(
-    request: FastifyRequest<{ Querystring: GetTemplateRequest }>,
+    request: FastifyRequest<{
+      Params: GetTemplateRequestParams;
+      Querystring: GetTemplateRequestQuery;
+    }>,
     reply: FastifyReply
   ) {
-    const query = request.query as GetTemplateArgs;
+    const params = request.params;
+    const query = request.query;
 
-    const template = await TemplateService.getRawTemplate(query);
+    const template = await TemplateService.getRawTemplate({
+      ...params,
+      ...query,
+    });
     const combined = TemplateService.makeBaseTemplate({
       html: template.html,
       css: template.css,
@@ -18,8 +27,8 @@ export default class TemplateController {
 
     return reply.code(200).send({
       ok: true,
-      message: `Got data for template ${query.name}`,
-      data: { name: query.name, combined, raw: { ...template } },
+      message: `result for template '${params.name}'`,
+      data: { name: params.name, combined, raw: { ...template } },
     });
   }
 }

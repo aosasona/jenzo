@@ -2,18 +2,23 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { NotFoundException } from "../../lib/exceptions";
 import PromiseFS from "../../lib/promise/fs";
+import { MakeTemplateArgs, RawTemplateResult } from "../../types/template";
 import {
-  GetTemplateArgs,
-  MakeTemplateArgs,
-  RawTemplateResult,
-} from "../../types/template";
+  GetTemplateRequestParams,
+  GetTemplateRequestQuery,
+} from "./template.schema";
 
 export default class TemplateService {
+  private static readonly TEMPLATES_DIR = path.join(
+    __dirname,
+    "../../..",
+    "templates"
+  );
   public static async getRawTemplate(
-    args: GetTemplateArgs
+    args: GetTemplateRequestParams & GetTemplateRequestQuery
   ): Promise<RawTemplateResult> {
     const { name, variant, style } = args;
-    const templateDir = path.join(__dirname, "..", "..", "templates", name);
+    const templateDir = TemplateService.TEMPLATES_DIR + `/${name}`;
     if (!(await PromiseFS.exists(templateDir))) {
       throw new NotFoundException(`Template '${name}' not found!`);
     }

@@ -2,11 +2,14 @@ import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
 import { ZodBaseResponse } from "../../schemas/request";
 
-const getTemplateRequest = z.object({
+const getTemplateRequestParams = z.object({
   name: z.string({
     required_error: "Template name is required",
     invalid_type_error: "Template name must be a string",
   }),
+});
+
+const getTemplateRequestQuery = z.object({
   variant: z
     .string({
       invalid_type_error: "Template variant must be a string",
@@ -32,17 +35,20 @@ const getTemplateResponse = z.object({
   }),
 });
 
-export type GetTemplateRequest = z.infer<typeof getTemplateRequest>;
+export type GetTemplateRequestParams = z.infer<typeof getTemplateRequestParams>;
+export type GetTemplateRequestQuery = z.infer<typeof getTemplateRequestQuery>;
 export type GetTemplateResponse = z.infer<typeof getTemplateResponse>;
 
 const { schemas, $ref } = buildJsonSchemas({
-  getTemplateRequest,
+  getTemplateRequestParams,
+  getTemplateRequestQuery,
   getTemplateResponse,
 });
 
 export const getTemplateSchema = {
   schema: {
-    query: $ref("getTemplateRequest"),
+    params: $ref("getTemplateRequestParams"),
+    query: $ref("getTemplateRequestQuery"),
     response: {
       200: $ref("getTemplateResponse"),
     },

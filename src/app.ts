@@ -64,7 +64,7 @@ export default class App {
 
   private static attachErrorHandler() {
     App.server.setErrorHandler(function(err, _, reply) {
-      console.error(err.message);
+      console.error("error: ", err.message);
       if (!err.validation && !err.validationContext) {
         const { message, code } = handleException(err);
         return reply.status(code).send({ ok: false, message });
