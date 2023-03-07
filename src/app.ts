@@ -2,7 +2,6 @@ import Fastify from "fastify";
 import fastifyEnv from "@fastify/env";
 import fastifyCors from "@fastify/cors";
 import handleException from "./lib/exceptions/handler";
-import { default as jenzoConfig } from "./jenzo.config";
 import { default as envSchema } from "./schemas/env";
 import TemplateRoutes from "./modules/template/template.route";
 import { templateSchemas } from "./modules/template/template.schema";
@@ -45,7 +44,16 @@ export default class App {
   }
 
   private static async configureCors() {
-    const corsConf = jenzoConfig.allowedOrigins;
+    let corsConf: string | string[] = "*";
+
+    const configAllowedIPs = App.server.config.ALLOWED_IPS;
+    if (configAllowedIPs != "") {
+      const splitIps = configAllowedIPs?.split(",");
+      if (splitIps?.length > 0) {
+        corsConf = splitIps?.map((ip) => ip?.trim());
+      }
+    }
+
     await App.server.register(fastifyCors, {
       origin: corsConf,
     });
