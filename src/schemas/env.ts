@@ -14,5 +14,9 @@ export default {
       type: "string",
       default: "",
     },
+    VERSION: {
+      type: "string",
+      default: "1",
+    },
   },
 };

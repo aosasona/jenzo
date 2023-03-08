@@ -1,21 +1,57 @@
-import { readFile } from "fs/promises";
-import path from "path";
+import { readFile, readdir } from "fs/promises";
 import { NotFoundException } from "../../lib/exceptions";
 import PromiseFS from "../../lib/promise/fs";
-import { MakeTemplateArgs, RawTemplateResult } from "../../types/template";
+import { TEMPLATES_DIR } from "../../lib/template";
+import { parseVars } from "../../lib/template/variables";
 import {
-  GetTemplateRequestParams,
-  GetTemplateRequestQuery,
-} from "./template.schema";
+  BaseGetTemplateMethodArgs,
+  MakeTemplateArgs,
+  PreviewTemplateArgs,
+  RawTemplateResult,
+  Template,
+} from "../../types/template";
 
 export default class TemplateService {
-  private static readonly TEMPLATES_DIR = path.join(
-    __dirname,
-    "../../..",
-    "templates"
-  );
+  private static readonly TEMPLATES_DIR = TEMPLATES_DIR;
+
+  public static async getTemplates(): Promise<Template[]> {
+    const templates: Template[] = [];
+
+    const dirs = (await readdir(TemplateService.TEMPLATES_DIR))?.filter(
+      (dir) => !dir?.startsWith(".")
+    );
+
+    if (dirs.length == 0) return templates;
+
+    for (let i = 0; i < dirs.length; i++) {
+      const styles: string[] = [];
+      const variants: string[] = [];
+      const currentTemplateDir = (
+        await readdir(TemplateService.TEMPLATES_DIR + `/${dirs[i]}`)
+      )?.filter((content) => !content.startsWith("."));
+
+      if (currentTemplateDir?.length == 0) continue;
+
+      currentTemplateDir.forEach(function(dir) {
+        if (dir?.endsWith(".html")) {
+          variants.push(dir?.split(".")[0]);
+        } else if (dir?.endsWith(".css")) {
+          styles.push(dir?.split(".")[0]);
+        }
+      });
+
+      templates.push({
+        name: dirs[i],
+        styles,
+        variants,
+      });
+    }
+
+    return templates;
+  }
+
   public static async getRawTemplate(
-    args: GetTemplateRequestParams & GetTemplateRequestQuery
+    args: BaseGetTemplateMethodArgs
   ): Promise<RawTemplateResult> {
     const { name, variant, style } = args;
     const templateDir = TemplateService.TEMPLATES_DIR + `/${name}`;
@@ -57,5 +93,10 @@ export default class TemplateService {
     fullHtml += `</head>${data.html}</html>`;
 
     return fullHtml;
+  }
+
+  public static async getTemplatePreview(args: PreviewTemplateArgs) {
+    const vars = parseVars(args.vars || "");
+    console.log(vars);
   }
 }

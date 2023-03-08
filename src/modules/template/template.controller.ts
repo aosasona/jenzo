@@ -1,20 +1,30 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
-  GetTemplateRequestParams,
-  GetTemplateRequestQuery,
+  GetTemplateParams,
+  GetTemplateQuery,
+  PreviewTemplateQuery,
 } from "./template.schema";
 import TemplateService from "./template.service";
 
 export default class TemplateController {
+  public static async getAllTemplates(_: FastifyRequest, reply: FastifyReply) {
+    const templates = await TemplateService.getTemplates();
+
+    return reply.code(200).send({
+      ok: true,
+      message: "result for all templates",
+      data: templates,
+    });
+  }
+
   public static async getTemplate(
     request: FastifyRequest<{
-      Params: GetTemplateRequestParams;
-      Querystring: GetTemplateRequestQuery;
+      Params: GetTemplateParams;
+      Querystring: GetTemplateQuery;
     }>,
     reply: FastifyReply
   ) {
-    const params = request.params;
-    const query = request.query;
+    const { params, query } = request;
 
     const template = await TemplateService.getRawTemplate({
       ...params,
@@ -29,6 +39,27 @@ export default class TemplateController {
       ok: true,
       message: `result for template '${params.name}'`,
       data: { name: params.name, combined, raw: { ...template } },
+    });
+  }
+
+  public static async previewTemplate(
+    request: FastifyRequest<{
+      Params: GetTemplateParams;
+      Querystring: PreviewTemplateQuery;
+    }>,
+    reply: FastifyReply
+  ) {
+    const { params, query } = request;
+
+    const preview = await TemplateService.getTemplatePreview({
+      ...params,
+      ...query,
+    });
+
+    return reply.code(200).send({
+      ok: true,
+      message: `preview for template '${params.name}'`,
+      data: preview,
     });
   }
 }

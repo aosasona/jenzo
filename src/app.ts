@@ -6,6 +6,9 @@ import { default as envSchema } from "./schemas/env";
 import TemplateRoutes from "./modules/template/template.route";
 import { templateSchemas } from "./modules/template/template.schema";
 import { Route } from "./types/modules";
+import { withRefResolver } from "fastify-zod";
+import fastifySwagger from "@fastify/swagger";
+import { fastifySwaggerUi } from "@fastify/swagger-ui";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -13,6 +16,7 @@ declare module "fastify" {
       ADDR: string;
       PORT: number;
       ALLOWED_IPS: string;
+      VERSION: string;
     };
   }
 }
@@ -27,12 +31,18 @@ export default class App {
     await App.configureCors();
     App.addSchemas();
     App.addHealthCheck();
+
+    App.registerSwagger();
+    await App.server.after();
+
     App.initAPIRoutes([new TemplateRoutes()]);
     App.attachErrorHandler();
   }
 
   public async listen() {
     await this.bootstrap();
+    await App.server.ready();
+    App.server.swagger();
 
     const { PORT, ADDR } = App.server.config;
 
@@ -98,8 +108,37 @@ export default class App {
 
     routes.forEach((route) => {
       App.server.register(route.init, {
-        prefix: `api/v1/${route.prefix}`,
+        prefix: `api/v${App.server.config.VERSION}/${route.prefix}`,
       });
+    });
+  }
+
+  private static registerSwagger() {
+    App.server.register(
+      fastifySwagger,
+      withRefResolver({
+        routePrefix: "/docs",
+        exposeRoute: true,
+        staticCSP: true,
+        swagger: {
+          info: {
+            title: "Fastify API",
+            description: "API for some products",
+            version: App.server.config.VERSION,
+          },
+          schemes: ["http"],
+          consumes: ["application/json"],
+          produces: ["application/json"],
+        },
+      })
+    );
+
+    App.server.register(fastifySwaggerUi, {
+      routePrefix: "/docs",
+      uiConfig: {
+        docExpansion: "list",
+        deepLinking: false,
+      },
     });
   }
 }

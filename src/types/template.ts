@@ -1,23 +1,26 @@
+import {
+  GetTemplateParams,
+  GetTemplateQuery,
+  PreviewTemplateQuery,
+} from "../modules/template/template.schema";
+
 export interface Template {
-  style: string;
-  html: string;
-  assets: string;
+  name: string;
+  variants: string[];
+  styles: string[];
 }
 
 export interface TemplateVars {
   [x: string]: string;
 }
 
+export type BaseGetTemplateMethodArgs = GetTemplateParams & GetTemplateQuery;
+
+export type PreviewTemplateArgs = GetTemplateParams & PreviewTemplateQuery;
+
 export interface MakeTemplateArgs {
   html: string;
   css?: string;
-  vars?: TemplateVars[];
-}
-
-export interface GetTemplateArgs {
-  name: string;
-  variant?: string;
-  style?: string;
 }
 
 export interface RawTemplateResult

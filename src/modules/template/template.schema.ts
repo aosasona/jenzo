@@ -1,56 +1,53 @@
 import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
-import { ZodBaseResponse } from "../../schemas/request";
+import { Schema } from "../../types/modules";
+import {
+  getTemplateParams,
+  getTemplateQuery,
+  getTemplateResponse,
+  getTemplatesResponse,
+  previewTemplateQuery,
+  previewTemplateResponse,
+} from "../../schemas/template";
 
-const getTemplateRequestParams = z.object({
-  name: z.string({
-    required_error: "Template name is required",
-    invalid_type_error: "Template name must be a string",
-  }),
-});
-
-const getTemplateRequestQuery = z.object({
-  variant: z
-    .string({
-      invalid_type_error: "Template variant must be a string",
-    })
-    .optional(),
-  style: z
-    .string({
-      invalid_type_error: "Template style must be a string",
-    })
-    .optional(),
-});
-
-const getTemplateResponse = z.object({
-  ...ZodBaseResponse,
-  data: z.object({
-    name: z.string(),
-    raw: z.object({
-      html: z.string(),
-      css: z.string(),
-      path: z.string(),
-    }),
-    combined: z.string(),
-  }),
-});
-
-export type GetTemplateRequestParams = z.infer<typeof getTemplateRequestParams>;
-export type GetTemplateRequestQuery = z.infer<typeof getTemplateRequestQuery>;
+export type GetTemplateParams = z.infer<typeof getTemplateParams>;
+export type GetTemplateQuery = z.infer<typeof getTemplateQuery>;
+export type PreviewTemplateQuery = z.infer<typeof previewTemplateQuery>;
 export type GetTemplateResponse = z.infer<typeof getTemplateResponse>;
 
 const { schemas, $ref } = buildJsonSchemas({
-  getTemplateRequestParams,
-  getTemplateRequestQuery,
+  getTemplateParams,
+  getTemplateQuery,
   getTemplateResponse,
+  getTemplatesResponse,
+  previewTemplateQuery,
+  previewTemplateResponse,
 });
 
-export const getTemplateSchema = {
+export const getTemplateSchema: Schema = {
   schema: {
-    params: $ref("getTemplateRequestParams"),
-    query: $ref("getTemplateRequestQuery"),
+    params: $ref("getTemplateParams"),
+    querystring: $ref("getTemplateQuery"),
     response: {
       200: $ref("getTemplateResponse"),
+    },
+  },
+};
+
+export const getTemplatesSchema: Schema = {
+  schema: {
+    response: {
+      200: $ref("getTemplatesResponse"),
+    },
+  },
+};
+
+export const previewTemplateSchema: Schema = {
+  schema: {
+    params: $ref("getTemplateParams"),
+    querystring: $ref("previewTemplateQuery"),
+    response: {
+      200: $ref("previewTemplateResponse"),
     },
   },
 };
