@@ -1,6 +1,6 @@
 import { readFile, readdir } from "fs/promises";
 import { NotFoundException } from "../../lib/exceptions";
-import PromiseFS from "../../lib/promise/fs";
+import { existsAsync } from "../../lib/promise/fs";
 import { injectVars, parseVars, TEMPLATES_DIR } from "../../lib/template";
 import {
   BaseGetTemplateMethodArgs,
@@ -54,17 +54,17 @@ export default class TemplateService {
   ): Promise<RawTemplateResult> {
     const { name, variant, style } = args;
     const templateDir = TemplateService.TEMPLATES_DIR + `/${name}`;
-    if (!(await PromiseFS.exists(templateDir))) {
+    if (!(await existsAsync(templateDir))) {
       throw new NotFoundException(`Template '${name}' not found!`);
     }
 
     const htmlPath = templateDir + `/${variant || "default"}.html`;
-    if (!(await PromiseFS.exists(htmlPath))) {
+    if (!(await existsAsync(htmlPath))) {
       throw new NotFoundException(`Variant '${variant}' not found!`);
     }
 
     const stylePath = templateDir + `/${style || "default"}.css`;
-    if (!(await PromiseFS.exists(stylePath))) {
+    if (!(await existsAsync(stylePath))) {
       throw new NotFoundException(`Style '${style}' not found!`);
     }
 
@@ -98,7 +98,7 @@ export default class TemplateService {
     name: string
   ): Promise<{ [x: string]: string }> {
     const varsPath = TemplateService.TEMPLATES_DIR + `/${name}/vars.json`;
-    if (!(await PromiseFS.exists(varsPath))) {
+    if (!(await existsAsync(varsPath))) {
       return {};
     }
     const defaultVars = await readFile(varsPath, "utf-8");

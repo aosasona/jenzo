@@ -22,6 +22,7 @@ export default class ImageController {
       html,
       templateName: params.name,
       size: query.size,
+      vars: query.vars,
       asBuffer: true,
     });
 
@@ -52,6 +53,7 @@ export default class ImageController {
     const data = await ImageService.generateImage({
       html,
       templateName: params.name,
+      vars: query.vars,
       size: query.size,
     });
 

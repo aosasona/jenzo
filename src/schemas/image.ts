@@ -9,11 +9,9 @@ export const generateImageQuery = previewTemplateQuery.extend({
     .enum(["small", "large"], {
       invalid_type_error: "size must be `small` or `large`",
     })
-    .default("large")
     .optional(),
   format: z
     .enum(["svg", "png"], { invalid_type_error: "format must be svg or png" })
-    .default("png")
     .optional(),
 });
 

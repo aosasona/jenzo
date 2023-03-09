@@ -1,5 +1,10 @@
 import { readFile } from "fs/promises";
 import * as puppeteer from "puppeteer";
+import {
+  addToCache,
+  findInCache,
+  generateCachedImageName,
+} from "../../lib/image/cache";
 import { imageSizes } from "../../lib/image/options";
 import { TEMPLATES_DIR } from "../../lib/template";
 import { GenerateImageQuery } from "./image.schema";
@@ -10,9 +15,18 @@ export default class ImageService {
     html: string;
     size: GenerateImageQuery["size"];
     asBuffer?: boolean;
+    vars: GenerateImageQuery["vars"];
   }): Promise<string | Buffer | null> {
-    const { html, templateName, asBuffer } = args;
+    const { html, templateName, asBuffer, vars } = args;
     let { size } = args;
+
+    const cacheName = generateCachedImageName({
+      size: size,
+      templateName,
+      vars: vars || "",
+    });
+    const cachedData = await findInCache(cacheName, "png");
+    if (cachedData) return cachedData;
 
     const opts =
       process.env.NODE_ENV === "production"
@@ -25,6 +39,9 @@ export default class ImageService {
     const browser = await puppeteer.launch(opts);
     const page = await browser.newPage();
     size = size || "large";
+    if (!["large", "small"].includes(size)) {
+      size = "large";
+    }
 
     const dimensions = imageSizes[size];
 
@@ -44,6 +61,13 @@ export default class ImageService {
     });
 
     await browser.close();
+
+    // only supports png at the moment, so, it is safe to hard-code it
+    await addToCache({
+      name: cacheName,
+      buffer: output,
+      format: "png",
+    });
 
     return output;
   }

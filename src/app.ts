@@ -17,8 +17,9 @@ declare module "fastify" {
 		config: {
 			ADDR: string;
 			PORT: number;
-			ALLOWED_IPS: string;
+			ALLOWED_HOSTS: string;
 			VERSION: string;
+			CACHE_TTL: number;
 		};
 	}
 }
@@ -58,7 +59,7 @@ export default class App {
 	private static async configureCors() {
 		let corsConf: string | string[] = "*";
 
-		const configAllowedIPs = App.server.config.ALLOWED_IPS;
+		const configAllowedIPs = App.server.config.ALLOWED_HOSTS;
 		if (configAllowedIPs !== "") {
 			const splitIps = configAllowedIPs?.split(",");
 			if (splitIps?.length > 0) {

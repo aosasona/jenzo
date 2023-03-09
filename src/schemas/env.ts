@@ -10,13 +10,17 @@ export default {
       type: "number",
       default: 8080,
     },
-    ALLOWED_IPS: {
+    ALLOWED_HOSTS: {
       type: "string",
       default: "",
     },
     VERSION: {
       type: "string",
       default: "1",
+    },
+    CACHE_TTL: {
+      type: "number",
+      default: 5,
     },
   },
 };
