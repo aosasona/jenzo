@@ -16,7 +16,7 @@ export function parseVars(data: string): { [x: string]: string } {
   return parsedVars;
 }
 
-export function replaceVariables(
+export function injectVars(
   html: string,
   vars: TemplateVars,
   defaultVars: TemplateVars
@@ -25,7 +25,10 @@ export function replaceVariables(
   const keys = Object.keys(combinedVars);
   if (keys.length == 0) return html;
 
-  keys.forEach(console.log);
+  (keys as typeof keys).forEach(function(key) {
+    const target = `{{vars.${key?.toLowerCase()}}}`;
+    html = html?.replaceAll(target, combinedVars[key]);
+  });
 
-  return "";
+  return html;
 }

@@ -1,8 +1,7 @@
 import { readFile, readdir } from "fs/promises";
 import { NotFoundException } from "../../lib/exceptions";
 import PromiseFS from "../../lib/promise/fs";
-import { TEMPLATES_DIR } from "../../lib/template";
-import { parseVars } from "../../lib/template/variables";
+import { injectVars, parseVars, TEMPLATES_DIR } from "../../lib/template";
 import {
   BaseGetTemplateMethodArgs,
   MakeTemplateArgs,
@@ -70,8 +69,8 @@ export default class TemplateService {
     }
 
     const [html, css] = await Promise.all([
-      readFile(htmlPath, "utf8"),
-      readFile(stylePath, "utf8"),
+      readFile(htmlPath, "utf-8"),
+      readFile(stylePath, "utf-8"),
     ]);
 
     const rawTemplate = {
@@ -84,7 +83,7 @@ export default class TemplateService {
   }
 
   public static makeBaseTemplate(data: MakeTemplateArgs): string {
-    let fullHtml = "<html><head>";
+    let fullHtml = "<html>\n<head>";
 
     if (data.css) {
       fullHtml += `<style>${data.css}</style>`;
@@ -95,8 +94,25 @@ export default class TemplateService {
     return fullHtml;
   }
 
-  public static async getTemplatePreview(args: PreviewTemplateArgs) {
+  private static async getDefaultVars(
+    name: string
+  ): Promise<{ [x: string]: string }> {
+    const varsPath = TemplateService.TEMPLATES_DIR + `/${name}/vars.json`;
+    if (!(await PromiseFS.exists(varsPath))) {
+      return {};
+    }
+    const defaultVars = await readFile(varsPath, "utf-8");
+    return JSON.parse(defaultVars) || {};
+  }
+
+  public static async getParsedTemplate(
+    args: PreviewTemplateArgs
+  ): Promise<string> {
     const vars = parseVars(args.vars || "");
-    console.log(vars);
+    const templateParts = await TemplateService.getRawTemplate(args);
+    const fullHtml = TemplateService.makeBaseTemplate(templateParts);
+    const defaultVars = await TemplateService.getDefaultVars(args.name);
+    const parsedTemplate = injectVars(fullHtml, vars, defaultVars);
+    return parsedTemplate;
   }
 }

@@ -51,7 +51,7 @@ export default class TemplateController {
   ) {
     const { params, query } = request;
 
-    const preview = await TemplateService.getTemplatePreview({
+    const parsedTemplate = await TemplateService.getParsedTemplate({
       ...params,
       ...query,
     });
@@ -59,7 +59,12 @@ export default class TemplateController {
     return reply.code(200).send({
       ok: true,
       message: `preview for template '${params.name}'`,
-      data: preview,
+      data: {
+        name: params.name,
+        html: parsedTemplate,
+        variant: query?.variant || "default",
+        style: query?.style || "default",
+      },
     });
   }
 }
