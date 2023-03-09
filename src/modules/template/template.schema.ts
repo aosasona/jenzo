@@ -15,14 +15,17 @@ export type GetTemplateQuery = z.infer<typeof getTemplateQuery>;
 export type PreviewTemplateQuery = z.infer<typeof previewTemplateQuery>;
 export type GetTemplateResponse = z.infer<typeof getTemplateResponse>;
 
-const { schemas, $ref } = buildJsonSchemas({
-  getTemplateParams,
-  getTemplateQuery,
-  getTemplateResponse,
-  getTemplatesResponse,
-  previewTemplateQuery,
-  previewTemplateResponse,
-});
+const { schemas, $ref } = buildJsonSchemas(
+  {
+    getTemplateParams,
+    getTemplateQuery,
+    getTemplateResponse,
+    getTemplatesResponse,
+    previewTemplateQuery,
+    previewTemplateResponse,
+  },
+  { $id: "TemplateSchema" }
+);
 
 export const getTemplateSchema: Schema = {
   schema: {

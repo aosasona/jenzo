@@ -1,6 +1,6 @@
 {
   "title": "Lorem ipsum dolor sit amet",
   "name": "John Doe",
-  "image": "person.jpg",
-  "fontsize": "2rem"
+  "image": "https://picsum.photos/200/300",
+  "fontsize": "3rem"
 }

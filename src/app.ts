@@ -9,6 +9,8 @@ import { Route } from "./types/modules";
 import { withRefResolver } from "fastify-zod";
 import fastifySwagger from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
+import { imageSchemas } from "./modules/image/image.schema";
+import ImageRoutes from "./modules/image/image.route";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -35,7 +37,7 @@ export default class App {
 		App.registerSwagger();
 		await App.server.after();
 
-		App.initAPIRoutes([new TemplateRoutes()]);
+		App.initAPIRoutes([new TemplateRoutes(), new ImageRoutes()]);
 		App.attachErrorHandler();
 	}
 
@@ -98,7 +100,7 @@ export default class App {
 	}
 
 	private static addSchemas() {
-		for (const schema of [...templateSchemas]) {
+		for (const schema of [...templateSchemas, ...imageSchemas]) {
 			App.server.addSchema(schema);
 		}
 	}

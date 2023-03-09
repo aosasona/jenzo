@@ -10,11 +10,14 @@ import {
 export type GenerateImageQuery = z.infer<typeof generateImageQuery>;
 export type GenerateImageParams = z.infer<typeof generateImageParams>;
 
-const { schemas, $ref } = buildJsonSchemas({
-	generateImageParams,
-	generateImageQuery,
-	generateImageResponse,
-});
+const { schemas, $ref } = buildJsonSchemas(
+	{
+		generateImageParams,
+		generateImageQuery,
+		generateImageResponse,
+	},
+	{ $id: "ImageSchema" }
+);
 
 export const generateImageSchema: Schema = {
 	schema: {
