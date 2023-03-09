@@ -16,8 +16,12 @@ export default class ImageService {
 
     const opts =
       process.env.NODE_ENV === "production"
-        ? { executablePath: "/usr/bin/google-chrome-stable" }
+        ? {
+          executablePath: "/usr/bin/google-chrome-stable",
+          args: ["--no-sandbox"],
+        }
         : {};
+
     const browser = await puppeteer.launch(opts);
     const page = await browser.newPage();
     size = size || "large";
