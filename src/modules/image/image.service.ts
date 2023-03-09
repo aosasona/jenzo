@@ -63,11 +63,13 @@ export default class ImageService {
     await browser.close();
 
     // only supports png at the moment, so, it is safe to hard-code it
-    await addToCache({
-      name: cacheName,
-      buffer: output,
-      format: "png",
-    });
+    if (!asBuffer) {
+      await addToCache({
+        name: cacheName,
+        buffer: output,
+        format: "png",
+      });
+    }
 
     return output;
   }
