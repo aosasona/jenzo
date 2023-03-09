@@ -14,7 +14,11 @@ export default class ImageService {
     const { html, templateName, asBuffer } = args;
     let { size } = args;
 
-    const browser = await puppeteer.launch();
+    const opts =
+      process.env.NODE_ENV === "production"
+        ? { executablePath: "/usr/bin/google-chrome-stable" }
+        : {};
+    const browser = await puppeteer.launch(opts);
     const page = await browser.newPage();
     size = size || "large";
 
