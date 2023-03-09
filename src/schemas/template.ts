@@ -52,6 +52,36 @@ export const previewTemplateResponse = z.object({
     .optional(),
 });
 
+export const createTemplateBody = z.object(
+  {
+    name: z.string({
+      required_error: "name is a required field",
+      invalid_type_error: "name must be a string",
+    }),
+    _default: z
+      .object(
+        {
+          html: z
+            .string({ invalid_type_error: "html must be a string" })
+            .optional(),
+          css: z
+            .string({ invalid_type_error: "css must be a string" })
+            .optional(),
+        },
+        { invalid_type_error: "invalid default type provided" }
+      )
+      .optional(),
+  },
+  { required_error: "body not provided!" }
+);
+
+export const createTemplateResponse = z.object({
+  ...ZodBaseResponse,
+  data: z.object({
+    name: z.string(),
+  }),
+});
+
 export const templateSchema = z.object({
   name: z.string(),
   variants: z.array(z.string()),

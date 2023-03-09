@@ -1,7 +1,8 @@
-import { readFile, readdir } from "fs/promises";
+import { readFile, readdir, mkdir, writeFile } from "fs/promises";
 import { NotFoundException } from "../../lib/exceptions";
 import { existsAsync } from "../../lib/promise/fs";
 import { injectVars, parseVars, TEMPLATES_DIR } from "../../lib/template";
+import type { CreateTemplateBody } from "./template.schema";
 import {
   BaseGetTemplateMethodArgs,
   MakeTemplateArgs,
@@ -9,9 +10,26 @@ import {
   RawTemplateResult,
   Template,
 } from "../../types/template";
+import ClientException from "../../lib/exceptions/ClientException";
 
 export default class TemplateService {
   private static readonly TEMPLATES_DIR = TEMPLATES_DIR;
+
+  public static async createTemplate(args: CreateTemplateBody) {
+    const { name, _default } = args;
+
+    const templatePath = TemplateService.TEMPLATES_DIR + `/${name}`;
+    if (await existsAsync(templatePath)) {
+      throw new ClientException("Template already exists!");
+    }
+
+    await mkdir(templatePath);
+
+    await Promise.all([
+      writeFile(`${templatePath}/default.html`, _default?.html || "", "utf-8"),
+      writeFile(`${templatePath}/default.css`, _default?.css || "", "utf-8"),
+    ]);
+  }
 
   public static async getTemplates(): Promise<Template[]> {
     const templates: Template[] = [];

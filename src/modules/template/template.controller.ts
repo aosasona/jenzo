@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
+  CreateTemplateBody,
   GetTemplateParams,
   GetTemplateQuery,
   PreviewTemplateQuery,
@@ -25,7 +26,6 @@ export default class TemplateController {
     reply: FastifyReply
   ) {
     const { params, query } = request;
-
     const template = await TemplateService.getRawTemplate({
       ...params,
       ...query,
@@ -34,7 +34,6 @@ export default class TemplateController {
       html: template.html,
       css: template.css,
     });
-
     return reply.code(200).send({
       ok: true,
       message: `result for template '${params.name}'`,
@@ -50,12 +49,10 @@ export default class TemplateController {
     reply: FastifyReply
   ) {
     const { params, query } = request;
-
     const parsedTemplate = await TemplateService.getParsedTemplate({
       ...params,
       ...query,
     });
-
     return reply.code(200).send({
       ok: true,
       message: `preview for template '${params.name}'`,
@@ -64,6 +61,23 @@ export default class TemplateController {
         html: parsedTemplate,
         variant: query?.variant || "default",
         style: query?.style || "default",
+      },
+    });
+  }
+
+  public static async createTemplate(
+    request: FastifyRequest<{ Body: CreateTemplateBody }>,
+    reply: FastifyReply
+  ) {
+    const { body } = request;
+
+    await TemplateService.createTemplate(body);
+
+    return reply.code(200).send({
+      ok: true,
+      message: `created new template ${body.name}`,
+      data: {
+        name: body?.name,
       },
     });
   }
