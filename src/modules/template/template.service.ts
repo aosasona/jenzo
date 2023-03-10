@@ -2,7 +2,12 @@ import { readFile, readdir, mkdir, writeFile } from "fs/promises";
 import { NotFoundException } from "../../lib/exceptions";
 import { existsAsync } from "../../lib/promise/fs";
 import { injectVars, parseVars, TEMPLATES_DIR } from "../../lib/template";
-import type { CreateTemplateBody } from "./template.schema";
+import type {
+  CreateTemplateBody,
+  ModifyTemplateBody,
+  ModifyTemplateParams,
+  TemplateVariant,
+} from "./template.schema";
 import {
   BaseGetTemplateMethodArgs,
   MakeTemplateArgs,
@@ -29,6 +34,35 @@ export default class TemplateService {
       writeFile(`${templatePath}/default.html`, _default?.html || "", "utf-8"),
       writeFile(`${templatePath}/default.css`, _default?.css || "", "utf-8"),
     ]);
+  }
+
+  public static async modifyTemplate(
+    args: ModifyTemplateParams & ModifyTemplateBody
+  ) {
+    const { name, data } = args;
+    const modifiedVariants: string[] = [];
+
+    const templatePath = TemplateService.TEMPLATES_DIR + `/${name}`;
+    for (const variant of data) {
+      await TemplateService.modifyVariant(templatePath, variant);
+      modifiedVariants.push(variant.variant);
+    }
+
+    return modifiedVariants;
+  }
+
+  private static async modifyVariant(path: string, data: TemplateVariant) {
+    const { html, css, variant } = data;
+
+    if (!!html) {
+      const htmlPath = path + `/${variant}.html`;
+      await writeFile(htmlPath, html, "utf-8");
+    }
+
+    if (!!css) {
+      const cssPath = path + `/${variant}.css`;
+      await writeFile(cssPath, css, "utf-8");
+    }
   }
 
   public static async getTemplates(): Promise<Template[]> {

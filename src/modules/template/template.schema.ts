@@ -10,6 +10,10 @@ import {
   previewTemplateQuery,
   previewTemplateResponse,
   createTemplateResponse,
+  modifyTemplateBody,
+  modifyTemplateParams,
+  modifyTemplateResponse,
+  templateVariant,
 } from "../../schemas/template";
 
 export type GetTemplateParams = z.infer<typeof getTemplateParams>;
@@ -17,6 +21,9 @@ export type GetTemplateQuery = z.infer<typeof getTemplateQuery>;
 export type PreviewTemplateQuery = z.infer<typeof previewTemplateQuery>;
 export type GetTemplateResponse = z.infer<typeof getTemplateResponse>;
 export type CreateTemplateBody = z.infer<typeof createTemplateBody>;
+export type ModifyTemplateParams = z.infer<typeof modifyTemplateParams>;
+export type ModifyTemplateBody = z.infer<typeof modifyTemplateBody>;
+export type TemplateVariant = z.infer<typeof templateVariant>;
 
 const { schemas, $ref } = buildJsonSchemas(
   {
@@ -28,6 +35,9 @@ const { schemas, $ref } = buildJsonSchemas(
     previewTemplateResponse,
     createTemplateBody,
     createTemplateResponse,
+    modifyTemplateBody,
+    modifyTemplateParams,
+    modifyTemplateResponse,
   },
   { $id: "TemplateSchema" }
 );
@@ -64,7 +74,17 @@ export const createTemplateSchema: Schema = {
   schema: {
     body: $ref("createTemplateBody"),
     response: {
-      200: $ref("createTemplateResponse"),
+      201: $ref("createTemplateResponse"),
+    },
+  },
+};
+
+export const modifyTemplateSchema: Schema = {
+  schema: {
+    body: $ref("modifyTemplateBody"),
+    params: $ref("modifyTemplateParams"),
+    response: {
+      200: $ref("modifyTemplateResponse"),
     },
   },
 };

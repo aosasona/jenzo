@@ -82,6 +82,41 @@ export const createTemplateResponse = z.object({
   }),
 });
 
+export const modifyTemplateParams = z.object({
+  name: z.string({
+    required_error: "template name is required",
+    invalid_type_error: "template name is of an invalid type",
+  }),
+});
+
+export const templateVariant = z.object({
+  variant: z.string({
+    required_error: "each object requires a variant name",
+    invalid_type_error: "variant (name) must be of type string",
+  }),
+  html: z.string().optional(),
+  css: z.string().optional(),
+});
+
+export const modifyTemplateBody = z.object({
+  data: z.array(templateVariant, {
+    required_error: "no body provided",
+    invalid_type_error:
+      "data must be an array of objects containing a variant (mandatory) and the html or css for that variant",
+    description:
+      "an array of objects including the variant name, the html and css for the template's variant (optional)",
+  }),
+});
+
+export const modifyTemplateResponse = z.object({
+  ...ZodBaseResponse,
+  data: z.object({
+    modified: z.array(z.string(), {
+      description: "an array of variants updated or created",
+    }),
+  }),
+});
+
 export const templateSchema = z.object({
   name: z.string(),
   variants: z.array(z.string()),

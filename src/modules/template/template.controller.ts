@@ -3,6 +3,8 @@ import {
   CreateTemplateBody,
   GetTemplateParams,
   GetTemplateQuery,
+  ModifyTemplateBody,
+  ModifyTemplateParams,
   PreviewTemplateQuery,
 } from "./template.schema";
 import TemplateService from "./template.service";
@@ -73,12 +75,36 @@ export default class TemplateController {
 
     await TemplateService.createTemplate(body);
 
-    return reply.code(200).send({
+    return reply.code(201).send({
       ok: true,
       message: `created new template ${body.name}`,
       data: {
         name: body?.name,
       },
+    });
+  }
+
+  public static async modifyTemplate(
+    request: FastifyRequest<{
+      Body: ModifyTemplateBody;
+      Params: ModifyTemplateParams;
+    }>,
+    reply: FastifyReply
+  ) {
+    const {
+      body: { data },
+      params,
+    } = request;
+
+    const modified = await TemplateService.modifyTemplate({
+      ...params,
+      data,
+    });
+
+    return reply.code(200).send({
+      ok: true,
+      message: "modified templates successfully",
+      data: { modified },
     });
   }
 }

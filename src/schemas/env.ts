@@ -22,5 +22,8 @@ export default {
       type: "number",
       default: 5,
     },
+    API_KEY: {
+      type: "string",
+    },
   },
 };

@@ -11,12 +11,15 @@ import fastifySwagger from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import { imageSchemas } from "./modules/image/image.schema";
 import ImageRoutes from "./modules/image/image.route";
+import randToken from "rand-token";
+import protectWithApikey from "./lib/access/apiKey";
 
 declare module "fastify" {
 	interface FastifyInstance {
 		config: {
 			ADDR: string;
 			PORT: number;
+			API_KEY: string;
 			ALLOWED_HOSTS: string;
 			VERSION: string;
 			CACHE_TTL: number;
@@ -30,6 +33,8 @@ export default class App {
 	private async bootstrap() {
 		await App.loadEnv();
 		await App.server.after(); // fastify does not load the environment variables unless this is called
+		App.checkApiKey();
+		App.decorate();
 
 		await App.configureCors();
 		App.addSchemas();
@@ -54,6 +59,10 @@ export default class App {
 
 	public getServer() {
 		return App.server;
+	}
+
+	private static decorate() {
+		App.server.decorate("protect", protectWithApikey);
 	}
 
 	private static async configureCors() {
@@ -114,6 +123,15 @@ export default class App {
 				prefix: `api/v${App.server.config.VERSION}/${route.prefix}`,
 			});
 		});
+	}
+
+	private static checkApiKey() {
+		if (!App.server.config.API_KEY) {
+			const key = randToken.uid(32);
+			console.log(
+				`You don't have an API key setup to protect your management endpoints, one has been generated for you. You could set this as your API_KEY environment variable and restart the application.\n------------------------------------------\n| ${key} \n------------------------------------------`
+			);
+		}
 	}
 
 	private static registerSwagger() {
