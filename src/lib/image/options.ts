@@ -3,8 +3,12 @@ export const imageSizes = {
     width: 600,
     height: 314,
   },
-  large: {
+  medium: {
     width: 1200,
     height: 628,
+  },
+  large: {
+    width: 2400,
+    height: 1256,
   },
 };

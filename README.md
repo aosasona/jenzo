@@ -64,7 +64,7 @@ vars=key:value
 
 Jenzo allows you to combine variants (HTML) with styles (CSS) in any way you want; as long as you have predefined them, and use variables in those combined templates.
 
-Here is a sample URL including variables (name, title and fontsize), a variant (HTML), a style (CSS) and a size (this takes `small` or `large`):
+Here is a sample URL including variables (name, title and fontsize), a variant (HTML), a style (CSS) and a size (this takes `small`, `medium` or `large`):
 
 ```
 http://localhost/api/v1/images/mono/preview?vars=name:John+Doe,title:Preview+Image,fontsize:3rem&size=small

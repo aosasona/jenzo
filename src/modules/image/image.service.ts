@@ -38,8 +38,8 @@ export default class ImageService {
 
     const browser = await puppeteer.launch(opts);
     const page = await browser.newPage();
-    size = size || "large";
-    if (!["large", "small"].includes(size)) {
+    size = size || "medium";
+    if (!["large", "medium", "small"].includes(size)) {
       size = "large";
     }
 

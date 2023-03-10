@@ -6,8 +6,8 @@ export const generateImageParams = getTemplateParams;
 
 export const generateImageQuery = previewTemplateQuery.extend({
   size: z
-    .enum(["small", "large"], {
-      invalid_type_error: "size must be `small` or `large`",
+    .enum(["small", "medium", "large"], {
+      invalid_type_error: "size must be `small`, `medium` or `large`",
     })
     .optional(),
   format: z
