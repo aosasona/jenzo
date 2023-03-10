@@ -13,10 +13,14 @@ export default class TemplateRoutes implements Route {
   public prefix = "templates";
 
   public init(server: FastifyInstance, _: any, done: any) {
-    server.post("/", createTemplateSchema, TemplateController.createTemplate);
+    server.post(
+      "/",
+      { preHandler: [server.protect], ...createTemplateSchema },
+      TemplateController.createTemplate
+    );
     server.post(
       "/:name",
-      { ...modifyTemplateSchema, preHandler: [(server as any).protect] },
+      { preHandler: [server.protect], ...modifyTemplateSchema },
       TemplateController.modifyTemplate
     );
     server.get("/", getTemplatesSchema, TemplateController.getAllTemplates);

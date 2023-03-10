@@ -25,12 +25,16 @@ declare module "fastify" {
 			CACHE_TTL: number;
 		};
 	}
+	export interface FastifyInstance {
+		protect: (...args: any) => any;
+	}
 }
 
 export default class App {
 	private static readonly server = Fastify({ logger: true });
 
 	private async bootstrap() {
+		//TODO: clean up this bootstrap function
 		await App.loadEnv();
 		await App.server.after(); // fastify does not load the environment variables unless this is called
 		App.checkApiKey();
