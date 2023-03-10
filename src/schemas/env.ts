@@ -8,7 +8,7 @@ export default {
     },
     PORT: {
       type: "number",
-      default: 8080,
+      default: 80,
     },
     ALLOWED_HOSTS: {
       type: "string",
