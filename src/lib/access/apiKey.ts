@@ -6,7 +6,7 @@ export default async function protectWithApikey(
 ) {
   const apiKey = request.headers["x-api-key"];
 
-  if (!apiKey || apiKey != process.env.API_KEY) {
+  if (!apiKey || apiKey !== process.env.API_KEY) {
     return reply
       .code(401)
       .send({ ok: false, message: "Sorry, you can't access this route" });
