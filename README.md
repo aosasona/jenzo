@@ -42,6 +42,8 @@ docker run -it jenzo
 
 # Environment
 
+`NODE_ENV`: this specifies the environment you are running in, this is very important as it also tells Puppeteer where to find your Chromium installation.
+
 `PORT`: specifies the port you want Jenzo to run on
 
 `ADDR`: specifies the address you want Jenzo to run on, this is usually just _localhost_ or _127.0.0.1_, but the default is _0.0.0.0_ for [Docker support](https://serverfault.com/questions/1084915/still-confused-why-docker-works-when-you-make-a-process-listen-to-0-0-0-0-but-no).
