@@ -10,8 +10,6 @@ Jenzo will run on a lot of machines either using Docker or Node, but you might w
 - Node (if you are not using Docker)
 - Docker (if you want to run it via Docker; recommended)
 
-> There is a known issue with the current Docker specification not working on ARM machines, you could modify it to download an ARM version of Chromium instead
-
 # Running Jenzo
 
 ## Running locally
