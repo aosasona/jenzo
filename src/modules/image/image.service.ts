@@ -31,7 +31,7 @@ export default class ImageService {
     const opts =
       process.env.NODE_ENV === "production"
         ? {
-          executablePath: "/usr/bin/google-chrome-stable",
+          executablePath: "/usr/bin/chromium",
           args: ["--no-sandbox"],
         }
         : {};
