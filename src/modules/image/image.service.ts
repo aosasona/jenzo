@@ -17,11 +17,9 @@ export default class ImageService {
     const cacheName = generateCachedImageName({ size: size, templateName, vars: vars || "" });
     const cachedData = await findInCache(cacheName, "png");
 
-    const opts = process.env.NODE_ENV === "production"
-        ? {
-          executablePath: "/usr/bin/chromium",
-          args: ["--no-sandbox"],
-        } : {};
+    if (cachedData) return cachedData;
+
+    const opts = process.env.NODE_ENV === "production" ? { executablePath: "/usr/bin/chromium", args: ["--no-sandbox"] } : {};
 
     const browser = await puppeteer.launch(opts);
     const page = await browser.newPage();
