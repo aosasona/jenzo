@@ -5,14 +5,10 @@ import { getTemplateParams, previewTemplateQuery } from "./template";
 export const generateImageParams = getTemplateParams;
 
 export const generateImageQuery = previewTemplateQuery.extend({
-  size: z
-    .enum(["small", "medium", "large"], {
-      invalid_type_error: "size must be `small`, `medium` or `large`",
-    })
-    .optional(),
-  format: z
-    .enum(["svg", "png"], { invalid_type_error: "format must be svg or png" })
-    .optional(),
+  size: z.enum(["small", "medium", "large"], {
+    invalid_type_error: "size must be `small`, `medium` or `large`",
+  }).optional(),
+  format: z.enum(["svg", "png"], { invalid_type_error: "format must be svg or png" }).optional(),
 });
 
 export const generateImageResponse = z.object({

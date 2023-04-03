@@ -23,9 +23,7 @@ export const generateImageSchema: Schema = {
 	schema: {
 		params: $ref("generateImageParams"),
 		querystring: $ref("generateImageQuery"),
-		response: {
-			200: $ref("generateImageResponse"),
-		},
+		response: { 200: $ref("generateImageResponse") },
 	},
 };
 
