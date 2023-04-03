@@ -147,8 +147,8 @@ export default class App {
 				staticCSP: true,
 				swagger: {
 					info: {
-						title: "Fastify API",
-						description: "API for some products",
+						title: "Jenzo",
+						description: "Generate meta images on the fly with HTML",
 						version: App.server.config.VERSION,
 					},
 					schemes: ["http"],

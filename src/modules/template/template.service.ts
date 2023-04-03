@@ -16,6 +16,7 @@ import {
   Template,
 } from "../../types/template";
 import ClientException from "../../lib/exceptions/ClientException";
+import path from "path";
 
 export default class TemplateService {
   private static readonly TEMPLATES_DIR = TEMPLATES_DIR;
@@ -94,17 +95,17 @@ export default class TemplateService {
   public static async getRawTemplate(args: BaseGetTemplateMethodArgs): Promise<RawTemplateResult> {
     const { name, variant, style } = args;
 
-    const templateDir = TemplateService.TEMPLATES_DIR + `/${name}`;
+    const templateDir = path.join(TemplateService.TEMPLATES_DIR, `${name}`);
     if (!(await existsAsync(templateDir))) {
       throw new NotFoundException(`Template '${name}' not found!`);
     }
 
-    const htmlPath = templateDir + `/${variant || "default"}.html`;
+    const htmlPath = path.join(templateDir, `${variant || "default"}.html`);
     if (!(await existsAsync(htmlPath))) {
       throw new NotFoundException(`Variant '${variant}' not found!`);
     }
 
-    const stylePath = templateDir + `/${style || "default"}.css`;
+    const stylePath = path.join(templateDir, `${style || variant || "default"}.css`);
     if (!(await existsAsync(stylePath))) {
       throw new NotFoundException(`Style '${style}' not found!`);
     }
@@ -138,7 +139,7 @@ export default class TemplateService {
   }
 
   public static async getParsedTemplate(args: PreviewTemplateArgs): Promise<string> {
-    const vars = parseVars(args.vars || "");
+    const vars = parseVars(args?.vars || "");
     const templateParts = await TemplateService.getRawTemplate(args);
     const fullHtml = TemplateService.makeBaseTemplate(templateParts);
     const defaultVars = await TemplateService.getDefaultVars(args.name);
