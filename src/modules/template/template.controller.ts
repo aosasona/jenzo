@@ -20,22 +20,12 @@ export default class TemplateController {
     });
   }
 
-  public static async getTemplate(
-    request: FastifyRequest<{
-      Params: GetTemplateParams;
-      Querystring: GetTemplateQuery;
-    }>,
-    reply: FastifyReply
-  ) {
+  public static async getTemplate(request: FastifyRequest<{ Params: GetTemplateParams; Querystring: GetTemplateQuery; }>, reply: FastifyReply) {
     const { params, query } = request;
-    const template = await TemplateService.getRawTemplate({
-      ...params,
-      ...query,
-    });
-    const combined = TemplateService.makeBaseTemplate({
-      html: template.html,
-      css: template.css,
-    });
+
+    const template = await TemplateService.getRawTemplate({ ...params, ...query });
+    const combined = TemplateService.makeBaseTemplate({ html: template.html, css: template.css, });
+
     return reply.code(200).send({
       ok: true,
       message: `result for template '${params.name}'`,
@@ -43,18 +33,10 @@ export default class TemplateController {
     });
   }
 
-  public static async previewTemplate(
-    request: FastifyRequest<{
-      Params: GetTemplateParams;
-      Querystring: PreviewTemplateQuery;
-    }>,
-    reply: FastifyReply
-  ) {
+  public static async previewTemplate(request: FastifyRequest<{ Params: GetTemplateParams; Querystring: PreviewTemplateQuery; }>, reply: FastifyReply) {
     const { params, query } = request;
-    const parsedTemplate = await TemplateService.getParsedTemplate({
-      ...params,
-      ...query,
-    });
+    const parsedTemplate = await TemplateService.getParsedTemplate({ ...params, ...query });
+
     return reply.code(200).send({
       ok: true,
       message: `preview for template '${params.name}'`,
@@ -67,10 +49,7 @@ export default class TemplateController {
     });
   }
 
-  public static async createTemplate(
-    request: FastifyRequest<{ Body: CreateTemplateBody }>,
-    reply: FastifyReply
-  ) {
+  public static async createTemplate(request: FastifyRequest<{ Body: CreateTemplateBody }>, reply: FastifyReply) {
     const { body } = request;
 
     await TemplateService.createTemplate(body);
@@ -78,28 +57,14 @@ export default class TemplateController {
     return reply.code(201).send({
       ok: true,
       message: `created new template ${body.name}`,
-      data: {
-        name: body?.name,
-      },
+      data: { name: body?.name },
     });
   }
 
-  public static async modifyTemplate(
-    request: FastifyRequest<{
-      Body: ModifyTemplateBody;
-      Params: ModifyTemplateParams;
-    }>,
-    reply: FastifyReply
-  ) {
-    const {
-      body: { data },
-      params,
-    } = request;
+  public static async modifyTemplate(request: FastifyRequest<{ Body: ModifyTemplateBody; Params: ModifyTemplateParams; }>, reply: FastifyReply) {
+    const { body: { data }, params } = request;
 
-    const modified = await TemplateService.modifyTemplate({
-      ...params,
-      data,
-    });
+    const modified = await TemplateService.modifyTemplate({ ...params, data });
 
     return reply.code(200).send({
       ok: true,

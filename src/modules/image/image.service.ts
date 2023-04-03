@@ -10,79 +10,50 @@ import { TEMPLATES_DIR } from "../../lib/template";
 import { GenerateImageQuery } from "./image.schema";
 
 export default class ImageService {
-  public static async generateImage(args: {
-    templateName: string;
-    html: string;
-    size: GenerateImageQuery["size"];
-    asBuffer?: boolean;
-    vars: GenerateImageQuery["vars"];
-  }): Promise<string | Buffer | null> {
+  public static async generateImage(args: { templateName: string; html: string; size: GenerateImageQuery["size"]; asBuffer?: boolean; vars: GenerateImageQuery["vars"]; }): Promise<string | Buffer | null> {
     const { html, templateName, asBuffer, vars } = args;
     let { size } = args;
 
-    const cacheName = generateCachedImageName({
-      size: size,
-      templateName,
-      vars: vars || "",
-    });
+    const cacheName = generateCachedImageName({ size: size, templateName, vars: vars || "" });
     const cachedData = await findInCache(cacheName, "png");
-    if (cachedData) return cachedData;
 
-    const opts =
-      process.env.NODE_ENV === "production"
+    const opts = process.env.NODE_ENV === "production"
         ? {
           executablePath: "/usr/bin/chromium",
           args: ["--no-sandbox"],
-        }
-        : {};
+        } : {};
 
     const browser = await puppeteer.launch(opts);
     const page = await browser.newPage();
+
     size = size || "medium";
     if (!["large", "medium", "small"].includes(size)) {
-      size = "large";
+      size = "medium";
     }
 
     const dimensions = imageSizes[size];
 
     await page.setRequestInterception(true);
-    page.on("request", (req) =>
-      ImageService.handleLocalImage(req, templateName)
-    );
+    page.on("request", (req) => ImageService.handleLocalImage(req, templateName));
 
-    await page.setViewport({
-      ...dimensions,
-    });
+    await page.setViewport({ ...dimensions, isLandscape: true });
     await page.setContent(html);
 
-    const output = await page.screenshot({
-      encoding: asBuffer ? "base64" : "binary",
-      fullPage: false,
-    });
+    const output = await page.screenshot({ encoding: asBuffer ? "base64" : "binary", fullPage: false });
 
     await browser.close();
 
     // only supports png at the moment, so, it is safe to hard-code it
     if (!asBuffer) {
-      await addToCache({
-        name: cacheName,
-        buffer: output,
-        format: "png",
-      });
+      await addToCache({ name: cacheName, buffer: output, format: "png" });
     }
 
     return output;
   }
 
-  private static async handleLocalImage(
-    request: puppeteer.HTTPRequest,
-    templateName: string
-  ) {
+  private static async handleLocalImage(request: puppeteer.HTTPRequest, templateName: string) {
     if (request.resourceType() === "image") {
-      const { isLocal, path } = ImageService.getImagePathFromUrl(
-        request?.url(),
-        templateName
-      );
+      const { isLocal, path } = ImageService.getImagePathFromUrl(request?.url(), templateName);
 
       if (!isLocal) {
         return request.continue();
@@ -103,20 +74,13 @@ export default class ImageService {
     }
   }
 
-  private static getImagePathFromUrl(
-    url: string,
-    templateName: string
-  ): {
-    isLocal: boolean;
-    path: string;
-  } {
+  private static getImagePathFromUrl(url: string, templateName: string): { isLocal: boolean; path: string; } {
     if (!url?.startsWith("file://")) {
       return { isLocal: false, path: url };
     }
 
     const requestedImage = url?.split("/")?.pop();
-    const imagePath =
-      TEMPLATES_DIR + `/${templateName}/assets/${requestedImage}`;
+    const imagePath = TEMPLATES_DIR + `/${templateName}/assets/${requestedImage}`;
 
     return { isLocal: true, path: imagePath };
   }

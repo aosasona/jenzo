@@ -9,16 +9,8 @@ export const getTemplateParams = z.object({
 });
 
 export const getTemplateQuery = z.object({
-  variant: z
-    .string({
-      invalid_type_error: "Template variant must be a string",
-    })
-    .optional(),
-  style: z
-    .string({
-      invalid_type_error: "Template style must be a string",
-    })
-    .optional(),
+  variant: z.string({ invalid_type_error: "Template variant must be a string" }).optional(),
+  style: z.string({ invalid_type_error: "Template style must be a string" }).optional(),
 });
 
 export const getTemplateResponse = z.object({
@@ -42,14 +34,12 @@ export const previewTemplateQuery = getTemplateQuery.extend({
 
 export const previewTemplateResponse = z.object({
   ...ZodBaseResponse,
-  data: z
-    .object({
-      name: z.string(),
-      variant: z.string(),
-      style: z.string(),
-      html: z.string(),
-    })
-    .optional(),
+  data: z.object({
+    name: z.string(),
+    variant: z.string(),
+    style: z.string(),
+    html: z.string(),
+  }).optional(),
 });
 
 export const createTemplateBody = z.object(
@@ -58,19 +48,16 @@ export const createTemplateBody = z.object(
       required_error: "name is a required field",
       invalid_type_error: "name must be a string",
     }),
-    _default: z
-      .object(
-        {
-          html: z
-            .string({ invalid_type_error: "html must be a string" })
-            .optional(),
-          css: z
-            .string({ invalid_type_error: "css must be a string" })
-            .optional(),
-        },
-        { invalid_type_error: "invalid default type provided" }
-      )
-      .optional(),
+    _default: z.object(
+      {
+        html: z
+          .string({ invalid_type_error: "html must be a string" })
+          .optional(),
+        css: z
+          .string({ invalid_type_error: "css must be a string" })
+          .optional(),
+      },
+      { invalid_type_error: "invalid default type provided" }).optional(),
   },
   { required_error: "body not provided!" }
 );
@@ -101,10 +88,8 @@ export const templateVariant = z.object({
 export const modifyTemplateBody = z.object({
   data: z.array(templateVariant, {
     required_error: "no body provided",
-    invalid_type_error:
-      "data must be an array of objects containing a variant (mandatory) and the html or css for that variant",
-    description:
-      "an array of objects including the variant name, the html and css for the template's variant (optional)",
+    invalid_type_error: "data must be an array of objects containing a variant (mandatory) and the html or css for that variant",
+    description: "an array of objects including the variant name, the html and css for the template's variant (optional)",
   }),
 });
 

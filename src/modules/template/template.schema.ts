@@ -25,38 +25,32 @@ export type ModifyTemplateParams = z.infer<typeof modifyTemplateParams>;
 export type ModifyTemplateBody = z.infer<typeof modifyTemplateBody>;
 export type TemplateVariant = z.infer<typeof templateVariant>;
 
-const { schemas, $ref } = buildJsonSchemas(
-  {
-    getTemplateParams,
-    getTemplateQuery,
-    getTemplateResponse,
-    getTemplatesResponse,
-    previewTemplateQuery,
-    previewTemplateResponse,
-    createTemplateBody,
-    createTemplateResponse,
-    modifyTemplateBody,
-    modifyTemplateParams,
-    modifyTemplateResponse,
-  },
-  { $id: "TemplateSchema" }
+const { schemas, $ref } = buildJsonSchemas({
+  getTemplateParams,
+  getTemplateQuery,
+  getTemplateResponse,
+  getTemplatesResponse,
+  previewTemplateQuery,
+  previewTemplateResponse,
+  createTemplateBody,
+  createTemplateResponse,
+  modifyTemplateBody,
+  modifyTemplateParams,
+  modifyTemplateResponse,
+}, { $id: "TemplateSchema" }
 );
 
 export const getTemplateSchema: Schema = {
   schema: {
     params: $ref("getTemplateParams"),
     querystring: $ref("getTemplateQuery"),
-    response: {
-      200: $ref("getTemplateResponse"),
-    },
+    response: { 200: $ref("getTemplateResponse") },
   },
 };
 
 export const getTemplatesSchema: Schema = {
   schema: {
-    response: {
-      200: $ref("getTemplatesResponse"),
-    },
+    response: { 200: $ref("getTemplatesResponse") },
   },
 };
 
@@ -64,18 +58,14 @@ export const previewTemplateSchema: Schema = {
   schema: {
     params: $ref("getTemplateParams"),
     querystring: $ref("previewTemplateQuery"),
-    response: {
-      200: $ref("previewTemplateResponse"),
-    },
+    response: { 200: $ref("previewTemplateResponse") },
   },
 };
 
 export const createTemplateSchema: Schema = {
   schema: {
     body: $ref("createTemplateBody"),
-    response: {
-      201: $ref("createTemplateResponse"),
-    },
+    response: { 201: $ref("createTemplateResponse") },
   },
 };
 
@@ -83,9 +73,7 @@ export const modifyTemplateSchema: Schema = {
   schema: {
     body: $ref("modifyTemplateBody"),
     params: $ref("modifyTemplateParams"),
-    response: {
-      200: $ref("modifyTemplateResponse"),
-    },
+    response: { 200: $ref("modifyTemplateResponse") },
   },
 };
 
