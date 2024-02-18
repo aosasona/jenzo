@@ -89,6 +89,8 @@ COPY . .
 
 RUN yarn run build
 
+RUN mkdir -p /app/data/cache
+
 EXPOSE 80
 
 CMD ["yarn", "start"]

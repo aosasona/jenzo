@@ -1,3 +1,5 @@
 .tmp
 cache
 */**/test
+!/data/cache
+/data/cache/*
