@@ -1,16 +1,18 @@
 import { readFile } from "fs/promises";
 import * as puppeteer from "puppeteer";
-import {
-  addToCache,
-  findInCache,
-  generateCachedImageName,
-} from "../../lib/image/cache";
+import { addToCache, findInCache, generateCachedImageName } from "../../lib/image/cache";
 import { imageSizes } from "../../lib/image/options";
 import { TEMPLATES_DIR } from "../../lib/template";
 import { GenerateImageQuery } from "./image.schema";
 
 export default class ImageService {
-  public static async generateImage(args: { templateName: string; html: string; size: GenerateImageQuery["size"]; asBuffer?: boolean; vars: GenerateImageQuery["vars"]; }): Promise<string | Buffer | null> {
+  public static async generateImage(args: {
+    templateName: string;
+    html: string;
+    size: GenerateImageQuery["size"];
+    asBuffer?: boolean;
+    vars: GenerateImageQuery["vars"];
+  }): Promise<string | Buffer | null> {
     const { html, templateName, asBuffer, vars } = args;
     let { size } = args;
 
@@ -72,7 +74,7 @@ export default class ImageService {
     }
   }
 
-  private static getImagePathFromUrl(url: string, templateName: string): { isLocal: boolean; path: string; } {
+  private static getImagePathFromUrl(url: string, templateName: string): { isLocal: boolean; path: string } {
     if (!url?.startsWith("file://")) {
       return { isLocal: false, path: url };
     }

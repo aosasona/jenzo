@@ -16,7 +16,7 @@ interface AddToCacheArgs {
   buffer: Buffer | string;
 }
 
-const CACHE_DIR = path.join(__dirname, "../../..", "cache");
+const CACHE_DIR = path.join(__dirname, "../../..", "data", "cache");
 
 export async function addToCache(args: AddToCacheArgs) {
   if (await findInCache(args.name, args.format)) return;
@@ -25,10 +25,7 @@ export async function addToCache(args: AddToCacheArgs) {
   return await writeFile(filePath, args.buffer);
 }
 
-export async function findInCache(
-  name: string,
-  ext: GenerateImageQuery["format"]
-): Promise<Buffer | null> {
+export async function findInCache(name: string, ext: GenerateImageQuery["format"]): Promise<Buffer | null> {
   if (!(await existsAsync(CACHE_DIR))) {
     await mkdir(CACHE_DIR);
     return null;
@@ -48,8 +45,7 @@ export async function findInCache(
 export async function validateCacheItem(path: string): Promise<boolean> {
   const ttl = parseInt(process.env?.CACHE_TTL || "1");
   const cacheStats = await stat(path);
-  const cacheAgeInMinutes =
-    (Date.now() - (cacheStats?.mtimeMs || 0)) / (1000 * 60);
+  const cacheAgeInMinutes = (Date.now() - (cacheStats?.mtimeMs || 0)) / (1000 * 60);
 
   return ttl > cacheAgeInMinutes;
 }
@@ -60,8 +56,7 @@ export async function deleteOnExpiry(path: string) {
 
 export function generateCachedImageName(args: GenerateCachedImageArgs): string {
   const parsedVars = parseVars(args.vars);
-  const valuesString =
-    Object?.values(parsedVars)?.join("_")?.toLowerCase() || "";
+  const valuesString = Object?.values(parsedVars)?.join("_")?.toLowerCase() || "";
   const templateName = args?.templateName?.substring(0, 1)?.toLowerCase() || "";
   const size = args?.size == "large" ? "l" : "s";
 

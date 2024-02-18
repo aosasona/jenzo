@@ -4,7 +4,7 @@ import { GenerateImageParams, GenerateImageQuery } from "./image.schema";
 import ImageService from "./image.service";
 
 export default class ImageController {
-  public static async generateImage(request: FastifyRequest<{ Querystring: GenerateImageQuery; Params: GenerateImageParams; }>, reply: FastifyReply) {
+  public static async generateImage(request: FastifyRequest<{ Querystring: GenerateImageQuery; Params: GenerateImageParams }>, reply: FastifyReply) {
     const { query, params } = request;
 
     const html = await TemplateService.getParsedTemplate({ ...params, ...query });
@@ -14,7 +14,7 @@ export default class ImageController {
       templateName: params.name,
       size: query.size,
       vars: query.vars,
-      asBuffer: true,
+      asBuffer: query.asBuffer ?? false,
     });
 
     return reply.code(200).send({
@@ -27,7 +27,7 @@ export default class ImageController {
     });
   }
 
-  public static async previewImage(request: FastifyRequest<{ Querystring: GenerateImageQuery; Params: GenerateImageParams; }>, reply: FastifyReply) {
+  public static async previewImage(request: FastifyRequest<{ Querystring: GenerateImageQuery; Params: GenerateImageParams }>, reply: FastifyReply) {
     const { query, params } = request;
 
     const html = await TemplateService.getParsedTemplate({ ...params, ...query });
