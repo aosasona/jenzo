@@ -26,7 +26,9 @@ ENV PUPPETEER_SKIP_DOWNLOAD true
 
 WORKDIR /app
 
-COPY yarn.lock package.json ./
+COPY yarn.lock package.json .
+
+COPY tsconfig.json .
 
 RUN apt-get update && apt-get install -y \
   chromium \
@@ -85,11 +87,11 @@ RUN apt-get update && apt-get install -y \
 
 RUN yarn install
 
-COPY . .
+COPY ./src ./src
+
+COPY ./data /app/data
 
 RUN yarn run build
-
-RUN mkdir -p /app/data/cache
 
 EXPOSE 80
 

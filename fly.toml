@@ -14,7 +14,6 @@ primary_region = 'lhr'
 [mounts]
   source = 'data'
   destination = '/app/data'
-  initial_size = 10
 
 [http_service]
   internal_port = 80
@@ -25,8 +24,8 @@ primary_region = 'lhr'
   processes = ['app']
 
 [[vm]]
-  memory = '2gb'
-  cpu_kind = 'shared-cpu-2x'
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
 
 [env]
